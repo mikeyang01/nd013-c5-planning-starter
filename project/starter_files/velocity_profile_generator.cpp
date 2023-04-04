@@ -354,7 +354,9 @@ double VelocityProfileGenerator::calc_distance(const double& v_i,
                                                const double& v_f,
                                                const double& a) const {
   double d{0.0};
+  // 在C++中，DBL_EPSILON是一个非常小的常量，如果a的绝对值小于DBL_EPSILON，它将被视为零
   if (std::abs(a) < DBL_EPSILON) {
+    // std::numeric_limits<double>::infinity() 来表示正无穷大
     d = std::numeric_limits<double>::infinity();
   } else {
     // TODO-calc distance: use one of the common rectilinear accelerated
@@ -362,7 +364,7 @@ double VelocityProfileGenerator::calc_distance(const double& v_i,
     // v_i (initial velocity) to v_f (final velocity) at a constant
     // acceleration/deceleration "a". HINT look at the description of this
     // function. Make sure you handle div by 0
-    d = 0;  // <- Update
+    d = std::abs((v_f * v_f - v_i * v_i) / (2 * a));
   }
   return d;
 }
@@ -385,7 +387,9 @@ double VelocityProfileGenerator::calc_final_speed(const double& v_i,
   // and make v_f = 0 in that case. If the discriminant is inf or nan return
   // infinity
 
-  double disc = 0;  // <- Fix this
+  //calculate the a final speed (v_f) given an initial speed (v_i), an acceleration (a) and distance (d).
+  //v_f = sqrt(v_i ^ 2 + 2ad);
+  double disc = v_i  *v_i + 2*  a * d;
   if (disc <= 0.0) {
     v_f = 0.0;
   } else if (disc == std::numeric_limits<double>::infinity() ||
