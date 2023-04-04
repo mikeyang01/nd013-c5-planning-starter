@@ -9,7 +9,6 @@
  **/
 
 #include "velocity_profile_generator.h"
-
 #include <cfloat>
 #include <cmath>
 #include <cstdlib>
@@ -28,7 +27,7 @@ void VelocityProfileGenerator::setup(const double& time_gap,
 
 /*
 This class computes a velocity trajectory from a starting speed to a desired
-speed. It works in unison with the Behavioral plannner  as it needs to build a
+speed. It works in unison with the Behavioral planner as it needs to build a
 velocity profile for each of the states that the vehicle can be in.
 In the "Follow_lane" state we need to either speed up or speed down to maintain
 a speed target. In the "decel_to_stop" state we need to create a profile that
@@ -39,10 +38,20 @@ nominal lane maintenance. In a real velocity planner you would need to handle
 the coupling between these states, but for simplicity this project can be
 implemented by isolating each case.
 
-For all trajectories, the required acceleration is given by _a_max (confortable
+For all trajectories, the required acceleration is given by _a_max (comfortable
 accel).
 Look at the structs.h for details on the types of manuevers/states that the
 behavior planner can be in.
+
+这个类用于计算从起始速度到期望速度的速度轨迹。
+它与行为规划器协同工作，因为它需要为车辆可能处于的每个状态构建速度轮廓。
+
+在“Follow_lane”状态下，我们需要加速或减速以维持速度目标。
+在“decel_to_stop”状态下，我们需要创建一个轮廓，使我们可以平稳地减速到停车线。
+
+对于所有轨迹，所需的加速度由_a_max（舒适加速度）给出。在structs.h中查看有关行为规划器可能处于的manuevers / states类型的详细信息。
+这个类的作用是为自动驾驶汽车生成速度轨迹，以便自动驾驶汽车可以在不同的状态下行驶，例如跟随车道、减速到停车线等。
+它使用舒适加速度来计算加速度，以确保自动驾驶汽车的行驶是平稳和舒适的。
 */
 
 std::vector<TrajectoryPoint> VelocityProfileGenerator::generate_trajectory(
@@ -342,14 +351,11 @@ std::vector<TrajectoryPoint> VelocityProfileGenerator::nominal_trajectory(
 }
 
 /*
-Using d = (v_f^2 - v_i^2) / (2 * a), compute the distance
-required for a given acceleration/deceleration.
-
+Using d = (v_f^2 - v_i^2) / (2 * a), compute the distance required for a given acceleration/deceleration.
 Inputs: v_i - the initial speed in m/s.
         v_f - the final speed in m/s.
         a - the acceleration in m/s^2.
         */
-
 double VelocityProfileGenerator::calc_distance(const double& v_i,
                                                const double& v_f,
                                                const double& a) const {
@@ -359,37 +365,43 @@ double VelocityProfileGenerator::calc_distance(const double& v_i,
     // std::numeric_limits<double>::infinity() 来表示正无穷大
     d = std::numeric_limits<double>::infinity();
   } else {
-    // TODO-calc distance: use one of the common rectilinear accelerated
-    // equations of motion to calculate the distance traveled while going from
-    // v_i (initial velocity) to v_f (final velocity) at a constant
-    // acceleration/deceleration "a". HINT look at the description of this
-    // function. Make sure you handle div by 0
-    d = std::abs((v_f * v_f - v_i * v_i) / (2 * a));
+    /*TODO: calc distance: 
+    use one of the common rectilinear accelerated equations of motion to calculate the distance traveled while going 
+    from v_i (initial velocity) to v_f (final velocity) at a constant acceleration/deceleration "a". 
+    HINT look at the description of this function. Make sure you handle div by 0 */
+    d = std::abs((v_f * v_f - v_i * v_i) / (2 * a)); // <- Fix
   }
   return d;
 }
 
 /*
-Using v_f = sqrt(v_i ^ 2 + 2ad), compute the final speed for a given
-acceleration across a given distance, with initial speed v_i.
-Make sure to check the discriminant of the radical. If it is negative,
-return zero as the final speed.
-Inputs : v_i - the initial speed in m / s.
-v_f - the ginal speed in m / s.
-a - the acceleration in m / s ^ 2.
+Using v_f = sqrt(v_i ^ 2 + 2ad), compute the final speed for a given acceleration across a given distance, with initial speed v_i.
+Make sure to check the discriminant of the radical. If it is negative, return zero as the final speed.
+
+Inputs : 
+v_i - the initial speed in m / s.
+v_f - the goal speed in m / s.
+a - the acceleration in m / s ^ 2. 
+
+我们需要计算最终速度，以便自动驾驶汽车可以安全地到达目标状态。
+v_i是自动驾驶汽车的初始速度，a是自动驾驶汽车的加速度，d是自动驾驶汽车需要行驶的距离。
+1. 首先，计算自动驾驶汽车在行驶距离d时的最大速度。
+2. 然后，根据自动驾驶汽车的初始速度和加速度，计算自动驾驶汽车在行驶距离d时的实际速度。
+3. 最后，返回自动驾驶汽车在行驶距离d时的实际速度作为最终速度。
+例如，假设自动驾驶汽车需要在一个直线道路上行驶，我们可以使用速度规划来计算自动驾驶汽车的最终速度，以便自动驾驶汽车可以安全地到达目标状态。
 */
 double VelocityProfileGenerator::calc_final_speed(const double& v_i,
                                                   const double& a,
                                                   const double& d) const {
   double v_f{0.0};
-  // TODO-calc final speed: Calculate the final distance. HINT: look at the
-  // description of this function. Make sure you handle negative discriminant
-  // and make v_f = 0 in that case. If the discriminant is inf or nan return
-  // infinity
-
+  /*
+  TODO: calc final speed: Calculate the final distance. 
+  HINT: look at the description of this function. 
+  Make sure you handle negative discriminant and make v_f = 0 in that case. 
+  If the discriminant is inf or nan return infinity
+  */
   //calculate the a final speed (v_f) given an initial speed (v_i), an acceleration (a) and distance (d).
-  //v_f = sqrt(v_i ^ 2 + 2ad);
-  double disc = v_i  *v_i + 2*  a * d;
+  double disc = v_i*v_i + 2*a*d; // <- Fix this
   if (disc <= 0.0) {
     v_f = 0.0;
   } else if (disc == std::numeric_limits<double>::infinity() ||
