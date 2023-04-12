@@ -12,11 +12,13 @@
 
 #include <array>
 
-// Planning Constants
-#define P_NUM_PATHS 10                  // TODO - Num of paths (goals)
+/*
+定义了一个常量P_NUM_PATHS，它表示我们要规划的路径数。*/
+#define P_NUM_PATHS 10 // TODO - Num of paths (goals) -> Fix
 
-/*当涉及到自动驾驶汽车时，P_LOOKAHEAD_MIN代表了车辆前方最小的观察距离，也就是车辆需要在前方至少观察多远的距离才能做出正确的决策。
-例如，当车辆行驶在高速公路上时，P_LOOKAHEAD_MIN可能会设置为几百米，以确保车辆能够及时发现前方的障碍物并做出相应的决策。*/
+/*
+P_LOOKAHEAD_MIN代表了车辆前方最小的观察距离，也就是车辆需要在前方至少观察多远的距离才能做出正确的决策。
+	例如，驶在高速公路上时，P_LOOKAHEAD_MIN可能会设置为几百米，以确保车辆能够及时发现前方的障碍物并做出相应的决策。*/
 #define P_LOOKAHEAD_MIN 8.0            // m
 #define P_LOOKAHEAD_MAX 20.0           // m
 #define P_LOOKAHEAD_TIME 1.5           // s
@@ -32,12 +34,15 @@
 #define P_LEAD_VEHICLE_LOOKAHEAD 20.0  // m
 #define P_REACTION_TIME 0.25           // secs
 
-/*P_NUM_POINTS_IN_SPIRAL是一个常量，用于定义螺旋线上的点数。
-在自动驾驶汽车中，螺旋线通常用于路径规划和决策制定，以帮助车辆在复杂的道路环境中行驶。*/
-#define P_NUM_POINTS_IN_SPIRAL 20       // TODO - Num of points in the spiral
+/*
+P_NUM_POINTS_IN_SPIRAL是一个常量，用于定义螺旋线上的点数。
+	螺旋线通常用于路径规划和决策制定，以帮助车辆在复杂的道路环境中行驶。*/
+#define P_NUM_POINTS_IN_SPIRAL 20 // TODO - Num of points in the spiral -> Fix
 
-/*举个例子，如果P_LOOKAHEAD_MIN的值是10米，P_NUM_POINTS_IN_SPIRAL的值是20，那么P_STOP_THRESHOLD_DISTANCE的值就是10/20*2=1米。
-也就是说，当车辆到达1米的距离时，就需要开始减速并最终停车。*/
+/*
+如果P_LOOKAHEAD_MIN的值是10米，P_NUM_POINTS_IN_SPIRAL的值是20，
+	那么P_STOP_THRESHOLD_DISTANCE的值就是10/20*2=1米。
+	也就是说，当车辆到达1米的距离时，就需要开始减速并最终停车。*/
 #define P_STOP_THRESHOLD_DISTANCE P_LOOKAHEAD_MIN / P_NUM_POINTS_IN_SPIRAL * 2  // m
 
 constexpr std::array<float, 3> CIRCLE_OFFSETS = {-1.0, 1.0, 3.0};  // m
