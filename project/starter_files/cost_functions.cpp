@@ -7,11 +7,11 @@
  * @file cost_functions.cpp
  **/
 #include "cost_functions.h"
+
 using namespace std;
 
 namespace cost_functions {
-
-double diff_cost(vector<double> coeff, double duration, array<double, 3> goals,
+  double diff_cost(vector<double> coeff, double duration, array<double, 3> goals,
                  array<float, 3> sigma, double cost_weight) {
   /*
   Penalizes trajectories whose coordinate(and derivatives) differ from the goal.
