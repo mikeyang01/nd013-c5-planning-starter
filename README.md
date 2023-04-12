@@ -27,4 +27,5 @@ The project files have TODOs for you to be able to:
    5. Finally, you will evaluate each trajectory generated against an objective function and select the “best” one. The goal of this objective function is to score poor paths that are in collision OR too close to static obstacles and to score high paths that end up closer to the center-line of the global path.
 
 ## Results
+<img src="img/start.jpg"/>
 <img src="img/complete.jpg"/>
