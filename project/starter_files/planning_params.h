@@ -14,7 +14,7 @@
 
 /*
 定义了一个常量P_NUM_PATHS，它表示我们要规划的路径数。*/
-#define P_NUM_PATHS 10 // TODO - Num of paths (goals) -> Fix
+#define P_NUM_PATHS 7 // TODO - Num of paths (goals) -> Fix
 
 /*
 P_LOOKAHEAD_MIN代表了车辆前方最小的观察距离，也就是车辆需要在前方至少观察多远的距离才能做出正确的决策。
