@@ -7,6 +7,8 @@
  * @file behavior_planner_FSM.cpp
  **/
 #include "behavior_planner_FSM.h"
+#include "velocity_profile_generator.h"
+
 using namespace std::chrono;
 
 State BehaviorPlannerFSM::get_closest_waypoint_goal(
@@ -39,7 +41,8 @@ State BehaviorPlannerFSM::get_closest_waypoint_goal(
   GetNext(d)函数会返回一个列表，其中包含了在车道方向上距离当前位置大约为d的路径点。
   这个列表包含了每个可能的偏差方向上的一个路径点。这个函数可以帮助车辆预测未来的路径，并做出相应的决策。
   
-  GetNextUntilLaneEnd(d)函数则会返回一个列表，其中包含了从当前路径点到车道末端距离为d的路径点。这个函数可以帮助车辆规划行驶到车道末端的路径。
+  GetNextUntilLaneEnd(d)函数则会返回一个列表，其中包含了从当前路径点到车道末端距离为d的路径点。
+  这个函数可以帮助车辆规划行驶到车道末端的路径。
   */
   auto lookahead_waypoints = waypoint_0 -> GetNext(lookahead_distance);
   auto n_wp = lookahead_waypoints.size();
@@ -84,7 +87,8 @@ double BehaviorPlannerFSM::get_look_ahead_distance(const State & ego_state) {
   VelocityProfileGenerator vpg;
   auto look_ahead_distance = vpg.calc_distance(velocity_mag, 0, _max_accel); // <- Fix This
 
-  //使用std::min()和std::max()函数对前瞻距离进行限制。这个限制可以确保前瞻距离在一定的范围内，以避免车辆做出不安全的速度规划。
+  //使用std::min()和std::max()函数对前瞻距离进行限制。
+  //这个限制可以确保前瞻距离在一定的范围内，以避免车辆做出不安全的速度规划。
   look_ahead_distance = std::min(std::max(look_ahead_distance, _lookahead_distance_min), _lookahead_distance_max);
 
   return look_ahead_distance;
@@ -147,13 +151,11 @@ State BehaviorPlannerFSM::state_transition(
       goal.location.y += std::sin(ang); // <- Fix This
 
       // LOG(INFO) << "BP- new STOP goal at: " << goal.location.x << ", " << goal.location.y;
-
       // TODO-goal speed at stopping point: What should be the goal speed
       // 停止当然是0
       goal.velocity.x = 0; // <- Fix This
       goal.velocity.y = 0; // <- Fix This
       goal.velocity.z = 0; // <- Fix This
-
     } else {
       /* 
       TODO:
@@ -214,7 +216,6 @@ State BehaviorPlannerFSM::state_transition(
     long long stopped_secs = duration_cast <seconds> (high_resolution_clock::now() - _start_stop_time)
       .count();
     // LOG(INFO) << "BP- Stopped for " << stopped_secs << " secs";
-
     /*
     如果车辆已经停止了一段时间（stopped_secs >= _req_stop_time），
     并且交通灯状态不是红灯（tl_state.compare("Red") != 0），
